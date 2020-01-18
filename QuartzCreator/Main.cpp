@@ -55,6 +55,10 @@
 
 #include "QuartzCreator.h"
 
+#include "Config.h"
+
+#include<iostream>
+
 int main()
 {
 	using namespace QuartzCreator;

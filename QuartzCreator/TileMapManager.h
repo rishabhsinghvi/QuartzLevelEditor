@@ -7,6 +7,7 @@
 
 #include "TileMap.h"
 #include "TextureManager.h"
+#include "Config.h"
 
 namespace QuartzCreator
 {
@@ -19,6 +20,8 @@ namespace QuartzCreator
 		std::unordered_map<std::string, std::unique_ptr<TileMap>> m_tileMapList;
 		TextureManager* m_tManager;
 	public:
+
+		void loadConfigData(const std::vector<Config::TileMapRecord>& records);
 
 		void init(TextureManager* tManager);
 

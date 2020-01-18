@@ -30,7 +30,6 @@ namespace QuartzCreator
 		{
 			target.draw(x, states);
 		}
-		std::cout << "Hrere\n";
 	}
 
 	void TileMap::createTileMap()

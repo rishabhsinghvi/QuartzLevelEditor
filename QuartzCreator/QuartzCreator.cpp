@@ -9,6 +9,8 @@ namespace QuartzCreator
 	extern const unsigned int WINDOW_WIDTH = sf::VideoMode::getDesktopMode().width;
 	extern const unsigned int WINDOW_HEIGHT = sf::VideoMode::getDesktopMode().height;
 
+	constexpr float KEY_MOVE_SPEED = 10.f;
+
 	QuartzCreatorApp::QuartzCreatorApp(const std::string& windowName) :
 		m_WindowName(windowName)
 	{
@@ -24,9 +26,16 @@ namespace QuartzCreator
 		m_tileMapManager = std::make_unique<TileMapManager>();
 		m_Browser = std::make_unique<imgui_addons::ImGuiFileBrowser>();
 		m_Timer = std::make_unique<sf::Clock>();
+		m_Config = std::make_unique<Config>();
 
+		m_View = m_Window->getDefaultView();
 
 		m_tileMapManager->init(m_textureManager.get());
+
+		m_Config->loadConfigFromFile();
+
+		m_textureManager->loadConfigData(m_Config->getTextureRecords());
+		m_tileMapManager->loadConfigData(m_Config->getTileMapRecords());
 	}
 
 	void QuartzCreatorApp::run()
@@ -42,14 +51,37 @@ namespace QuartzCreator
 				{
 					m_Running = false;
 				}
+
 			}
+
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+			{
+				m_View.move(KEY_MOVE_SPEED, 0.f);
+			}
+
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+			{
+				m_View.move(-KEY_MOVE_SPEED, 0.f);
+			}
+
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+			{
+				m_View.move(0.f, -KEY_MOVE_SPEED);
+			}
+
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+			{
+				m_View.move(0.f, KEY_MOVE_SPEED);
+			}
+
 
 			ImGui::SFML::Update(*m_Window, m_Timer->restart());
 
+			m_Window->clear();
+			m_Window->setView(m_View);
+
 			drawTileMap();
 			drawGUI();
-
-			m_Window->clear();
 
 			ImGui::SFML::Render(*m_Window);
 
@@ -60,6 +92,7 @@ namespace QuartzCreator
 
 	void QuartzCreatorApp::shutdown()
 	{
+		m_Config->writeConfigToFile();
 		ImGui::SFML::Shutdown();
 	}
 
@@ -130,20 +163,30 @@ namespace QuartzCreator
 
 		if (ImGui::BeginPopup("TileMapTextureSelector"))
 		{
-			ImGui::Text("Select Texture for TileMap");
 			const auto& textures = m_textureManager->getTextureList();
 
+			static constexpr size_t MAX_T_LEN = 50;
+			static char name[MAX_T_LEN] = "default";
+
+			ImGui::Text("Enter Name for TileMap: ");
+			ImGui::InputText("Tilemap Name", name, MAX_T_LEN);
+
+			ImGui::Separator();
+			ImGui::Text("Select Texture for TileMap:\n");
 			for (const auto& texture : textures)
 			{
 				if (ImGui::Selectable(texture.first.c_str()))
 				{
-					m_tileMapManager->loadTileMap(texture.first, m_Browser->selected_fn, texture.first);
+					auto sName = std::string(name);
+					m_Config->addToConfig(Config::TileMapRecord(sName, texture.first, m_Browser->selected_fn));
+					m_tileMapManager->loadTileMap(sName, m_Browser->selected_fn, texture.first);
 					ImGui::CloseCurrentPopup();
 				}
 			}
 
 			ImGui::EndPopup();
 			
+
 		}
 
 
@@ -160,7 +203,9 @@ namespace QuartzCreator
 			{
 				if (name[0] != '\0')
 				{
-					m_textureManager->loadTexture(std::string(name), m_Browser->selected_fn);
+					auto sName = std::string(name);
+					m_Config->addToConfig(Config::TextureRecord(sName, m_Browser->selected_fn));
+					m_textureManager->loadTexture(sName, m_Browser->selected_fn);
 					ImGui::CloseCurrentPopup();
 				}
 			}

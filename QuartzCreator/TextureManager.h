@@ -6,6 +6,8 @@
 #include<unordered_map>
 #include<memory>
 
+#include "Config.h"
+
 namespace QuartzCreator
 {
 	class TextureManager
@@ -14,6 +16,8 @@ namespace QuartzCreator
 		std::unordered_map<std::string, std::unique_ptr<sf::Texture>> m_TextureList;
 
 	public:
+
+		void loadConfigData(const std::vector<Config::TextureRecord>& records);
 
 		void loadTexture(const std::string& name, const std::string& path);
 

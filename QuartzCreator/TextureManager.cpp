@@ -7,6 +7,14 @@ namespace QuartzCreator
 {
 	class TextureManager;
 
+	void TextureManager::loadConfigData(const std::vector<Config::TextureRecord>& records)
+	{
+		for (const auto& record : records)
+		{
+			loadTexture(record.m_Name, record.m_PathToFile);
+		}
+	}
+
 	void TextureManager::loadTexture(const std::string& name, const std::string& path)
 	{
 		auto texture = std::make_unique<sf::Texture>();

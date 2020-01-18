@@ -13,6 +13,7 @@
 #include "Timer.h"
 #include "TextureManager.h"
 #include "TileMapManager.h"
+#include "Config.h"
 
 namespace QuartzCreator
 {
@@ -24,6 +25,7 @@ namespace QuartzCreator
 		std::unique_ptr<sf::RenderWindow> m_Window;
 		std::unique_ptr<sf::Clock> m_Timer;
 		std::unique_ptr<imgui_addons::ImGuiFileBrowser> m_Browser;
+		std::unique_ptr<Config> m_Config;
 		bool m_tileMapSelector = false;
 		bool m_entityCreator = false;
 		bool m_textureSelector = false;
@@ -31,6 +33,7 @@ namespace QuartzCreator
 		std::unique_ptr<TextureManager> m_textureManager; 
 		std::unique_ptr<TileMapManager> m_tileMapManager;
 		TileMap* m_currentTileMap = nullptr;
+		sf::View m_View;
 
 	public:
 

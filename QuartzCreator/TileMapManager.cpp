@@ -5,6 +5,13 @@
 
 namespace QuartzCreator
 {
+	void TileMapManager::loadConfigData(const std::vector<Config::TileMapRecord>& records)
+	{
+		for (const auto& record : records)
+		{
+			loadTileMap(record.m_Name, record.m_PathToFile, record.m_TextureName);
+		}
+	}
 	void TileMapManager::init(TextureManager* tManager)
 	{
 		m_tManager = tManager;

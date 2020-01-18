@@ -146,6 +146,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Config.h" />
     <ClInclude Include="ext\FileBrowser\Dirent\dirent.h" />
     <ClInclude Include="ext\FileBrowser\ImGuiFileBrowser.h" />
     <ClInclude Include="ext\imconfig.h" />
@@ -275,6 +276,7 @@
     <None Include="imgui.ini" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Config.cpp" />
     <ClCompile Include="ext\FileBrowser\ImGuiFileBrowser.cpp" />
     <ClCompile Include="ext\imgui-SFML.cpp" />
     <ClCompile Include="ext\imgui.cpp" />
