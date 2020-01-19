@@ -80,6 +80,7 @@ namespace QuartzCreator
 			m_Window->clear();
 			m_Window->setView(m_View);
 
+			m_Window->draw(bg);
 			drawTileMap();
 			drawGUI();
 
@@ -220,9 +221,17 @@ namespace QuartzCreator
 
 			for (const auto& map : maps)
 			{
-				if (ImGui::Selectable(map.first.c_str()))
+				/*if (ImGui::Selectable(map.first.c_str()))
 				{
 					m_currentTileMap = m_tileMapManager->getTileMapPointer(map.first);
+				}*/
+				if (ImGui::TreeNode(map.first.c_str()))
+				{
+					if (ImGui::Button("Load Tile Map"))
+					{
+						m_currentTileMap = m_tileMapManager->getTileMapPointer(map.first);
+					}
+					ImGui::TreePop();
 				}
 			}
 
@@ -235,6 +244,7 @@ namespace QuartzCreator
 
 		if (ImGui::TreeNode("Avaiable Textures"))
 		{
+			static bool renameTexture = false;
 			static bool imageDisplay = false;
 			static std::string imageName;
 
@@ -242,12 +252,66 @@ namespace QuartzCreator
 
 			for (const auto& texture : textures)
 			{
-				if (ImGui::Selectable(texture.first.c_str()))
+				/*if (ImGui::Selectable(texture.first.c_str()))
 				{
 					imageDisplay = true;
 					imageName = texture.first;
+				}*/
+				if (ImGui::TreeNode(texture.first.c_str()))
+				{
+					if (ImGui::Button("Show Texture"))
+					{
+						imageDisplay = true;
+						imageName = texture.first;
+					}
+
+					if (ImGui::Button("Rename Texture"))
+					{
+						renameTexture = true;
+						imageName = texture.first;
+					}
+					ImGui::TreePop();
 				}
+
 			}
+
+			if (renameTexture)
+			{
+				ImGui::OpenPopup("RenameTexture");
+				renameTexture = false;
+			}
+
+			if (ImGui::BeginPopup("RenameTexture"))
+			{
+				ImGui::Text("Enter New Name For Texture");
+				static constexpr size_t MAX_T_LEN = 50;
+				static char name[MAX_T_LEN];
+
+				ImGui::InputText("New Name", name, MAX_T_LEN);
+
+				if (ImGui::Button("Rename"))
+				{
+					if (name[0] != '\0')
+					{
+						auto sName = std::string(name);
+
+						auto& record = m_Config->getTextureRecord(imageName);
+						record.m_Name = sName;
+
+						m_Config->changeTextureName(imageName, sName);
+
+						m_textureManager->renameTexture(imageName, sName);
+						m_tileMapManager->changeTextureName(imageName, sName);
+
+						ImGui::CloseCurrentPopup();
+					}
+				}
+
+				ImGui::EndPopup();
+
+			}
+
+
 
 			if (imageDisplay)
 			{
@@ -266,6 +330,7 @@ namespace QuartzCreator
 
 		if (ImGui::TreeNode("Available Entities"))
 		{
+
 			ImGui::TreePop();
 
 			ImGui::Separator();

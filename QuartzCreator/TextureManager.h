@@ -27,6 +27,8 @@ namespace QuartzCreator
 
 		const std::unordered_map<std::string, std::unique_ptr<sf::Texture>>& getTextureList() const;
 
+		void renameTexture(const std::string& prev, const std::string& newN);
+
 	};
 }
 

@@ -32,6 +32,16 @@ namespace QuartzCreator
 		}
 	}
 
+	std::string TileMap::getTextureName() const
+	{
+		return m_textureName;
+	}
+
+	void TileMap::setTextureName(const std::string& name)
+	{
+		m_textureName = name;
+	}
+
 	void TileMap::createTileMap()
 	{
 		using json = nlohmann::json;

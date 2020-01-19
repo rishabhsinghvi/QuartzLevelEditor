@@ -32,6 +32,8 @@ namespace QuartzCreator
 		TileMap* getTileMapPointer(const std::string& tileMapName) const;
 
 		const std::unordered_map<std::string, std::unique_ptr<TileMap>>& getTileMapList() const;
+
+		void changeTextureName(std::string& name, std::string& newVal);
 	};
 }
 

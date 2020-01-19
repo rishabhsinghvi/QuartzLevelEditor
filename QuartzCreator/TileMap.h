@@ -33,6 +33,10 @@ namespace QuartzCreator
 
 		void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
+		std::string getTextureName() const;
+
+		void setTextureName(const std::string& name);
+
 	private:
 		void createTileMap(); 
 

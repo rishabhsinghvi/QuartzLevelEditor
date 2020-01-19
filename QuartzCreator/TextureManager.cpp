@@ -47,7 +47,7 @@ namespace QuartzCreator
 
 		if (found == m_TextureList.end())
 		{
-			std::cout << "Texture not available\n";
+			std::cout << "Texture not available: " << textureName << '\n';
 			__debugbreak();
 		}
 
@@ -57,6 +57,20 @@ namespace QuartzCreator
 	const std::unordered_map<std::string, std::unique_ptr<sf::Texture>>& TextureManager::getTextureList() const
 	{
 		return m_TextureList;
+	}
+
+	void TextureManager::renameTexture(const std::string& prev, const std::string& newName)
+	{
+		auto found = m_TextureList.find(prev);
+
+		if (found == m_TextureList.end())
+			return;
+
+		auto val = std::move(found->second);
+
+		m_TextureList.erase(found);
+
+		m_TextureList[newName] = std::move(val);
 	}
 
 }

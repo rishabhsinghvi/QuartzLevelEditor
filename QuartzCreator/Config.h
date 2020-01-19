@@ -61,6 +61,12 @@ namespace QuartzCreator
 
 		const std::vector<TextureRecord>& getTextureRecords() const;
 
+		TextureRecord& getTextureRecord(const std::string& name);
+
+		TileMapRecord& getTilemapRecord(const std::string& name);
+
+		void changeTextureName(const std::string& prev, const std::string& newN);
+
 	private:
 
 		std::string createConfigDirectory() const;

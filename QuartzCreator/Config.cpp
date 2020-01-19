@@ -113,6 +113,41 @@ namespace QuartzCreator
 		return m_textureRecords;
 	}
 
+	Config::TextureRecord& Config::getTextureRecord(const std::string& name)
+	{
+		for (auto& record : m_textureRecords)
+		{
+			if (record.m_Name == name)
+			{
+				return record;
+			}
+		}
+		__debugbreak();
+	}
+
+	Config::TileMapRecord& Config::getTilemapRecord(const std::string& name)
+	{
+		for (auto& record : m_tileMapRecords)
+		{
+			if (record.m_Name == name)
+			{
+				return record;
+			}
+		}
+		__debugbreak();
+	}
+
+	void Config::changeTextureName(const std::string& prev, const std::string& newN)
+	{
+		for (auto& x :m_tileMapRecords)
+		{
+			if (x.m_TextureName == prev)
+			{
+				x.m_TextureName = newN;
+			}
+		}
+	}
+
 	std::string Config::createConfigDirectory() const
 	{
 		// Not platform agnostic, need to change it later!

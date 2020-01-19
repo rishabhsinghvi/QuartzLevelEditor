@@ -49,4 +49,15 @@ namespace QuartzCreator
 	{
 		return m_tileMapList;
 	}
+
+	void TileMapManager::changeTextureName(std::string& prev, std::string& newVal)
+	{
+		for (auto& map : m_tileMapList)
+		{
+			if (map.second->getTextureName() == prev)
+			{
+				map.second->setTextureName(newVal);
+			}
+		}
+	}
 }
