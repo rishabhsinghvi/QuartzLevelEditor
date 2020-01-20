@@ -79,11 +79,13 @@ namespace QuartzCreator
 				m_View.move(0.f, KEY_MOVE_SPEED);
 			}
 
+		
 
 			ImGui::SFML::Update(*m_Window, m_Timer->restart());
 
 			m_Window->clear();
 			m_Window->setView(m_View);
+			
 
 			drawTileMap();
 			drawGUI();
