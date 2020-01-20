@@ -22,6 +22,7 @@ namespace QuartzCreator
 		std::string m_CurrentTextureName;
 		bool m_DisplayMaker = false;
 		sf::Sprite m_ViewSprite;
+		std::string m_AnimName;
 
 	public:
 

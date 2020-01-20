@@ -38,6 +38,7 @@ namespace QuartzCreator
 				if (name[0] != '\0')
 				{
 					animName = std::string(name);
+					m_AnimName = animName;
 					nameSelected = true;
 					std::cout << animName << '\n';
 				}
@@ -134,6 +135,12 @@ namespace QuartzCreator
 		ImGui::Text("Frames: %d", animation.GetNumFrames());
 		ImGui::SameLine();
 		ImGui::Text("Animation Time: %.3fs", animation.GetLength());
+		
+		if (ImGui::Button("Save Animation"))
+		{
+			m_AnimationList[m_AnimName] = animation;
+			animation.Clear();
+		}
 
 
 		if (!animation.IsEmpty() && viewAnimation)

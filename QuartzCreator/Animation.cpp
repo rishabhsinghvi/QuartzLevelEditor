@@ -117,6 +117,18 @@ namespace QuartzCreator
 		return m_Frames;
 	}
 
+	void Animation::Clear()
+	{
+		m_Looped = false;
+		m_Done = false;
+		m_Frames.clear();
+		m_totalAnimationTime = 0.0f;
+		m_currentTime = 0.0;
+		m_currentFrameIndex = 0;
+		m_Sprite = nullptr;
+		m_AnimationName = std::string();
+	}
+
 
 
 

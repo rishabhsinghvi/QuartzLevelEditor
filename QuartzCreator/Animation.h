@@ -57,6 +57,8 @@ namespace QuartzCreator
 		bool IsEmpty() const;
 
 		std::vector<Frame>& GetFrameList();
+
+		void Clear();
 	};
 
 	struct AnimationFile

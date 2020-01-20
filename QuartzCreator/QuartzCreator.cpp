@@ -354,6 +354,16 @@ namespace QuartzCreator
 
 		if (ImGui::TreeNode("Available Animations"))
 		{
+			const auto& anims = m_animationManager->GetAnimationList();
+
+			for (const auto& anim : anims)
+			{
+				if (ImGui::TreeNode(anim.first.c_str()))
+				{
+
+					ImGui::TreePop();
+				}
+			}
 			ImGui::TreePop();
 			ImGui::Separator();
 		}
