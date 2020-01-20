@@ -29,16 +29,16 @@ namespace QuartzCreator
 
 		TileMap(const std::string& tileMapPath, const std::string& texturePath, TextureManager* tManager);
 
-		void renderMap() const;
+		void RenderMap() const;
 
 		void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
-		std::string getTextureName() const;
+		std::string GetTextureName() const;
 
-		void setTextureName(const std::string& name);
+		void SetTextureName(const std::string& name);
 
 	private:
-		void createTileMap(); 
+		void CreateTileMap(); 
 
 
 

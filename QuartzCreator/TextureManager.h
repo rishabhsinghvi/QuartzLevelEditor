@@ -5,6 +5,7 @@
 
 #include<unordered_map>
 #include<memory>
+#include<optional>
 
 #include "Config.h"
 
@@ -21,9 +22,11 @@ namespace QuartzCreator
 
 		void loadTexture(const std::string& name, const std::string& path);
 
-		const sf::Texture& getTextureRef(const std::string& textureName) const;
+		std::optional<sf::Texture> getTextureRef(const std::string& textureName) const;
 
-		const sf::Texture* getTexturePointer(const std::string& textureName) const;
+		std::optional<const sf::Texture*> getTexturePointer(const std::string& textureName) const;
+
+		const sf::Texture& getLoadedTextureRef(const std::string& textureName) const;
 
 		const std::unordered_map<std::string, std::unique_ptr<sf::Texture>>& getTextureList() const;
 

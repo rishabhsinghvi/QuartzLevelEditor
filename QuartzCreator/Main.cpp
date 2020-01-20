@@ -1,8 +1,4 @@
-
-
 #include "QuartzCreator.h"
-
-#include "Config.h"
 
 #include<iostream>
 
@@ -16,4 +12,3 @@ int main()
 	quartzCreatorApp->run();
 	quartzCreatorApp->shutdown();
 }
-

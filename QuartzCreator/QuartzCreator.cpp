@@ -4,8 +4,11 @@
 #include<iostream>
 #endif
 
+
+
 namespace QuartzCreator
 {
+	static constexpr size_t MAX_T_LEN = 50;
 	extern const unsigned int WINDOW_WIDTH = sf::VideoMode::getDesktopMode().width;
 	extern const unsigned int WINDOW_HEIGHT = sf::VideoMode::getDesktopMode().height;
 
@@ -24,6 +27,7 @@ namespace QuartzCreator
 
 		m_textureManager = std::make_unique<TextureManager>();
 		m_tileMapManager = std::make_unique<TileMapManager>();
+		m_animationManager = std::make_unique<AnimationManager>();
 		m_Browser = std::make_unique<imgui_addons::ImGuiFileBrowser>();
 		m_Timer = std::make_unique<sf::Clock>();
 		m_Config = std::make_unique<Config>();
@@ -31,6 +35,7 @@ namespace QuartzCreator
 		m_View = m_Window->getDefaultView();
 
 		m_tileMapManager->init(m_textureManager.get());
+		m_animationManager->Init(m_textureManager.get());
 
 		m_Config->loadConfigFromFile();
 
@@ -80,7 +85,6 @@ namespace QuartzCreator
 			m_Window->clear();
 			m_Window->setView(m_View);
 
-			m_Window->draw(bg);
 			drawTileMap();
 			drawGUI();
 
@@ -105,6 +109,9 @@ namespace QuartzCreator
 
 		// Show available resources
 		drawResourcesList();
+
+
+		m_animationManager->DisplayGUI(m_Timer->getElapsedTime().asSeconds());
 		
 		ImGui::End();
 
@@ -123,9 +130,13 @@ namespace QuartzCreator
 				{
 					m_textureSelector = true;
 				}
-				if (ImGui::MenuItem("Create New Entity..."))
+				if (ImGui::MenuItem("New Entity..."))
 				{
 
+				}
+				if (ImGui::MenuItem("New Animation ..."))
+				{
+					m_animationManager->SetDisplay(true);
 				}
 				if (ImGui::MenuItem("Close..."))
 				{
@@ -136,6 +147,7 @@ namespace QuartzCreator
 			}
 			ImGui::EndMenuBar();
 		}
+
 
 		if (m_tileMapSelector)
 		{
@@ -166,7 +178,7 @@ namespace QuartzCreator
 		{
 			const auto& textures = m_textureManager->getTextureList();
 
-			static constexpr size_t MAX_T_LEN = 50;
+			
 			static char name[MAX_T_LEN] = "default";
 
 			ImGui::Text("Enter Name for TileMap: ");
@@ -194,7 +206,7 @@ namespace QuartzCreator
 
 		if (ImGui::BeginPopup("TextureNamer"))
 		{
-			static constexpr size_t MAX_T_LEN = 50;
+			
 			static char name[MAX_T_LEN] = "default";
 
 			ImGui::Text("Enter Name for Texture: ");
@@ -242,7 +254,7 @@ namespace QuartzCreator
 
 
 
-		if (ImGui::TreeNode("Avaiable Textures"))
+		if (ImGui::TreeNode("Available Textures"))
 		{
 			static bool renameTexture = false;
 			static bool imageDisplay = false;
@@ -284,7 +296,7 @@ namespace QuartzCreator
 			if (ImGui::BeginPopup("RenameTexture"))
 			{
 				ImGui::Text("Enter New Name For Texture");
-				static constexpr size_t MAX_T_LEN = 50;
+				
 				static char name[MAX_T_LEN];
 
 				ImGui::InputText("New Name", name, MAX_T_LEN);
@@ -303,6 +315,8 @@ namespace QuartzCreator
 						m_textureManager->renameTexture(imageName, sName);
 						m_tileMapManager->changeTextureName(imageName, sName);
 
+						imageName = sName;
+					
 						ImGui::CloseCurrentPopup();
 					}
 				}
@@ -316,7 +330,7 @@ namespace QuartzCreator
 			if (imageDisplay)
 			{
 				ImGui::Begin(imageName.c_str(), &imageDisplay);
-				auto& t = m_textureManager->getTextureRef(imageName);
+				auto& t = m_textureManager->getLoadedTextureRef(imageName);
 				ImGui::Text("Size (in px) = %d x %d", t.getSize().x, t.getSize().y);
 				ImGui::Image(t);
 				ImGui::End();
@@ -333,6 +347,12 @@ namespace QuartzCreator
 
 			ImGui::TreePop();
 
+			ImGui::Separator();
+		}
+
+		if (ImGui::TreeNode("Available Animations"))
+		{
+			ImGui::TreePop();
 			ImGui::Separator();
 		}
 

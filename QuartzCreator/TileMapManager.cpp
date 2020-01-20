@@ -54,9 +54,9 @@ namespace QuartzCreator
 	{
 		for (auto& map : m_tileMapList)
 		{
-			if (map.second->getTextureName() == prev)
+			if (map.second->GetTextureName() == prev)
 			{
-				map.second->setTextureName(newVal);
+				map.second->SetTextureName(newVal);
 			}
 		}
 	}

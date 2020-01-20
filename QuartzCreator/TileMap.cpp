@@ -13,18 +13,24 @@ namespace QuartzCreator
 	TileMap::TileMap(const std::string& tileMapLoader, const std::string& textureName, TextureManager* tManager)
 		: m_tileMapFile(tileMapLoader), m_textureName(textureName), m_tManager(tManager)
 	{
-		createTileMap();
+		CreateTileMap();
 	}
 
-	void TileMap::renderMap() const
+	void TileMap::RenderMap() const
 	{
 	}
 
 	void TileMap::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	{
+		auto txPtr = m_tManager->getTexturePointer(m_textureName);
+
+		if (!txPtr.has_value())
+			return;
+
 		states.transform *= getTransform();
 
-		states.texture = m_tManager->getTexturePointer(m_textureName);
+		states.texture = txPtr.value();
+
 
 		for (const auto& x : m_Vertices)
 		{
@@ -32,17 +38,17 @@ namespace QuartzCreator
 		}
 	}
 
-	std::string TileMap::getTextureName() const
+	std::string TileMap::GetTextureName() const
 	{
 		return m_textureName;
 	}
 
-	void TileMap::setTextureName(const std::string& name)
+	void TileMap::SetTextureName(const std::string& name)
 	{
 		m_textureName = name;
 	}
 
-	void TileMap::createTileMap()
+	void TileMap::CreateTileMap()
 	{
 		using json = nlohmann::json;
 
@@ -51,7 +57,7 @@ namespace QuartzCreator
 		if (!file)
 		{
 			std::cout << "Unable to open tile map file: " << m_tileMapFile << '\n';
-			__debugbreak();
+			return;
 		}
 
 		json root;
@@ -67,6 +73,12 @@ namespace QuartzCreator
 		const auto& layers = root["layers"];
 
 		auto texturePtr = m_tManager->getTexturePointer(m_textureName);
+
+		if (!texturePtr.has_value())
+		{
+			std::cout << "Unable to craete tilemap since the texture wasn't found in the available resources.\n";
+			return;
+		}
 
 
 		for (const auto& layer : layers)
@@ -85,8 +97,8 @@ namespace QuartzCreator
 				{
 					int tileNumber = layerData[i + j * m_tileMapWidth] - 1;
 
-					int tu = tileNumber % (texturePtr->getSize().x / m_tileSizeX);
-					int tv = tileNumber / ((texturePtr->getSize().y / m_tileSizeY) - 1);
+					int tu = tileNumber % (texturePtr.value()->getSize().x / m_tileSizeX);
+					int tv = tileNumber / ((texturePtr.value()->getSize().y / m_tileSizeY) - 1);
 
 					auto quad = &vertices[(i + j * m_tileMapWidth) * 4];
 

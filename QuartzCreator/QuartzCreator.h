@@ -13,6 +13,7 @@
 #include "Timer.h"
 #include "TextureManager.h"
 #include "TileMapManager.h"
+#include "AnimationManager.h"
 #include "Config.h"
 
 namespace QuartzCreator
@@ -32,6 +33,7 @@ namespace QuartzCreator
 		bool m_textureNamer = false;
 		std::unique_ptr<TextureManager> m_textureManager; 
 		std::unique_ptr<TileMapManager> m_tileMapManager;
+		std::unique_ptr<AnimationManager> m_animationManager;
 		TileMap* m_currentTileMap = nullptr;
 		sf::View m_View;
 
