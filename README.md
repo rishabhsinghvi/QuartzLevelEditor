@@ -14,3 +14,6 @@ I started this project as a way to quickly develop and export levels for my 2D p
 ## Screenshot
 
 ![sample.png](https://github.com/rishabhsinghvi/QuartzLevelEditor/blob/master/QuartzCreator/sample/sample.png)
+
+
+![sample.png](https://github.com/rishabhsinghvi/QuartzLevelEditor/blob/master/QuartzCreator/sample/sample2.png)
