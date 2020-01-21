@@ -43,7 +43,7 @@ namespace QuartzCreator
 
 		QuartzCreatorApp(const std::string& windowName);
 
-		void init();
+		void Init();
 
 		void run();
 

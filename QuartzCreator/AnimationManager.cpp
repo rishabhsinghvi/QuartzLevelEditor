@@ -47,7 +47,7 @@ namespace QuartzCreator
 		}
 		else
 		{
-			const auto& textures = m_tManager->getTextureList();
+			const auto& textures = m_tManager->GetTextureList();
 			ImGui::Begin("Select Texture", &nameSelected);
 			for (const auto& texture : textures)
 			{
@@ -75,7 +75,7 @@ namespace QuartzCreator
 		static sf::Clock clock;
 
 		
-		auto& tex = m_tManager->getLoadedTextureRef(m_CurrentTextureName);
+		auto& tex = m_tManager->GetLoadedTextureRef(m_CurrentTextureName);
 
 		auto sizeX = tex.getSize().x;
 		auto sizeY = tex.getSize().y;
@@ -148,6 +148,7 @@ namespace QuartzCreator
 			animation.Update(clock.getElapsedTime().asSeconds());
 			ImGui::Begin("Animation Viewer", &viewAnimation);
 			ImGui::Image(m_ViewSprite);
+			ImGui::Text("Frame: %d", animation.GetCurrentFrameIndex());
 			ImGui::End();
 		}
 

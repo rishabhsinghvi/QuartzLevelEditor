@@ -6,15 +6,15 @@ namespace QuartzCreator
 {
 	class TextureManager;
 
-	void TextureManager::loadConfigData(const std::vector<Config::TextureRecord>& records)
+	void TextureManager::LoadConfigData(const std::vector<Config::TextureRecord>& records)
 	{
 		for (const auto& record : records)
 		{
-			loadTexture(record.m_Name, record.m_PathToFile);
+			LoadTexture(record.m_Name, record.m_PathToFile);
 		}
 	}
 
-	void TextureManager::loadTexture(const std::string& name, const std::string& path)
+	void TextureManager::LoadTexture(const std::string& name, const std::string& path)
 	{
 		auto texture = std::make_unique<sf::Texture>();
 		if (!texture->loadFromFile(path))
@@ -22,12 +22,15 @@ namespace QuartzCreator
 			std::cout << "Unable to load texture from:  " << path << '\n';
 			return;
 		}
+		TextureInfo info;
+		info.m_Path = path;
+		info.m_Texture = std::move(texture);
 
-		m_TextureList[name] = std::move(texture);
+		m_TextureList[name] = std::move(info);
 		std::cout << "TextureManager: Succesfully created texture: " << name << '\n';
 	}
 
-	std::optional<sf::Texture> TextureManager::getTextureRef(const std::string& textureName) const
+	std::optional<sf::Texture> TextureManager::GetTextureRef(const std::string& textureName) const
 	{
 		auto found = m_TextureList.find(textureName);
 
@@ -37,10 +40,10 @@ namespace QuartzCreator
 			return {};
 		}
 
-		return *(found->second);
+		return *(found->second.m_Texture);
 	}
 
-	std::optional<const sf::Texture*> QuartzCreator::TextureManager::getTexturePointer(const std::string& textureName) const
+	std::optional<const sf::Texture*> QuartzCreator::TextureManager::GetTexturePointer(const std::string& textureName) const
 	{
 		auto found = m_TextureList.find(textureName);
 
@@ -50,23 +53,23 @@ namespace QuartzCreator
 			return {};
 		}
 
-		return found->second.get();
+		return found->second.m_Texture.get();
 	}
 
-	// getLoadedTextureRef is the same as getTextureRef, but it assumes that the requested texture WILL be present in the resource manager
-	// It does no checking whatsoever. Use getTextureRef() as much as possible
+	// GetLoadedTextureRef is the same as GetTextureRef, but it assumes that the requested texture WILL be present in the resource manager
+	// It does no checking whatsoever. Use GetTextureRef() as much as possible
 
-	const sf::Texture& TextureManager::getLoadedTextureRef(const std::string& textureName) const
+	const sf::Texture& TextureManager::GetLoadedTextureRef(const std::string& textureName) const
 	{
-		return *m_TextureList.find(textureName)->second;
+		return *m_TextureList.find(textureName)->second.m_Texture;
 	}
 
-	const std::unordered_map<std::string, std::unique_ptr<sf::Texture>>& TextureManager::getTextureList() const
+	const std::unordered_map<std::string, TextureManager::TextureInfo>& TextureManager::GetTextureList() const
 	{
 		return m_TextureList;
 	}
 
-	void TextureManager::renameTexture(const std::string& prev, const std::string& newName)
+	void TextureManager::RenameTexture(const std::string& prev, const std::string& newName)
 	{
 		auto found = m_TextureList.find(prev);
 
@@ -80,6 +83,16 @@ namespace QuartzCreator
 		m_TextureList[newName] = std::move(val);
 
 		std::cout << "Renamed texture from " << prev << " to " << newName << '\n';
+	}
+
+	void TextureManager::DeleteTexture(const std::string& name)
+	{
+		auto found = m_TextureList.find(name);
+
+		if (found == m_TextureList.end())
+			return;
+
+		m_TextureList.erase(found);
 	}
 
 }

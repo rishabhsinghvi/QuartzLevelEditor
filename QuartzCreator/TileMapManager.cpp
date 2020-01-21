@@ -5,25 +5,29 @@
 
 namespace QuartzCreator
 {
-	void TileMapManager::loadConfigData(const std::vector<Config::TileMapRecord>& records)
+	void TileMapManager::LoadConfigData(const std::vector<Config::TileMapRecord>& records)
 	{
 		for (const auto& record : records)
 		{
-			loadTileMap(record.m_Name, record.m_PathToFile, record.m_TextureName);
+			LoadTileMap(record.m_Name, record.m_PathToFile, record.m_TextureName);
 		}
 	}
-	void TileMapManager::init(TextureManager* tManager)
+	void TileMapManager::Init(TextureManager* tManager)
 	{
 		m_tManager = tManager;
 	}
-	void TileMapManager::loadTileMap(const std::string& name, const std::string& path, const std::string& texture)
+	void TileMapManager::LoadTileMap(const std::string& name, const std::string& path, const std::string& texture)
 	{ 
 		auto tileMap = std::make_unique<TileMap>(path, texture, m_tManager);
+		TileMapInfo tInfo;
+		tInfo.m_Path = path;
+		tInfo.m_TextureName = texture;
+		tInfo.m_TileMap = std::move(tileMap);
 
-		m_tileMapList[name] = std::move(tileMap);
+		m_tileMapList[name] = std::move(tInfo);
 
 	}
-	const TileMap& TileMapManager::getTileMapRef(const std::string& tileMapName) const
+	const TileMap& TileMapManager::GetTileMapRef(const std::string& tileMapName) const
 	{
 		auto found = m_tileMapList.find(tileMapName);
 		if (found == m_tileMapList.end())
@@ -32,9 +36,9 @@ namespace QuartzCreator
 			__debugbreak();
 		}
 
-		return *(found->second);
+		return *(found->second.m_TileMap);
 	}
-	TileMap* TileMapManager::getTileMapPointer(const std::string& tileMapName) const
+	TileMap* TileMapManager::GetTileMapPointer(const std::string& tileMapName) const
 	{
 		auto found = m_tileMapList.find(tileMapName);
 		if (found == m_tileMapList.end())
@@ -43,20 +47,21 @@ namespace QuartzCreator
 			__debugbreak();
 		}
 
-		return found->second.get();
+		return found->second.m_TileMap.get();
 	}
-	const std::unordered_map<std::string, std::unique_ptr<TileMap>>& TileMapManager::getTileMapList() const
+	const std::unordered_map<std::string, TileMapManager::TileMapInfo>& TileMapManager::GetTileMapList() const
 	{
 		return m_tileMapList;
 	}
 
-	void TileMapManager::changeTextureName(std::string& prev, std::string& newVal)
+	void TileMapManager::ChangeTextureName(std::string& prev, std::string& newVal)
 	{
 		for (auto& map : m_tileMapList)
 		{
-			if (map.second->GetTextureName() == prev)
+			if (map.second.m_TextureName == prev)
 			{
-				map.second->SetTextureName(newVal);
+				map.second.m_TextureName = newVal;
+				map.second.m_TileMap->SetTextureName(newVal);
 			}
 		}
 	}

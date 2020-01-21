@@ -16,24 +16,32 @@ namespace QuartzCreator
 
 	class TileMapManager
 	{
+	public:
+		struct TileMapInfo
+		{
+			std::unique_ptr<TileMap> m_TileMap;
+			std::string m_Path;
+			std::string m_TextureName;
+		};
+
 	private:
-		std::unordered_map<std::string, std::unique_ptr<TileMap>> m_tileMapList;
+		std::unordered_map<std::string, TileMapInfo> m_tileMapList;
 		TextureManager* m_tManager;
 	public:
 
-		void loadConfigData(const std::vector<Config::TileMapRecord>& records);
+		void LoadConfigData(const std::vector<Config::TileMapRecord>& records);
 
-		void init(TextureManager* tManager);
+		void Init(TextureManager* tManager);
 
-		void loadTileMap(const std::string& name, const std::string& path, const std::string& texture);
+		void LoadTileMap(const std::string& name, const std::string& path, const std::string& texture);
 
-		const TileMap& getTileMapRef(const std::string& tileMapName) const;
+		const TileMap& GetTileMapRef(const std::string& tileMapName) const;
 
-		TileMap* getTileMapPointer(const std::string& tileMapName) const;
+		TileMap* GetTileMapPointer(const std::string& tileMapName) const;
 
-		const std::unordered_map<std::string, std::unique_ptr<TileMap>>& getTileMapList() const;
+		const std::unordered_map<std::string, TileMapInfo>& GetTileMapList() const;
 
-		void changeTextureName(std::string& name, std::string& newVal);
+		void ChangeTextureName(std::string& name, std::string& newVal);
 	};
 }
 

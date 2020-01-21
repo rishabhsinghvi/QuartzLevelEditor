@@ -7,6 +7,10 @@
 
 namespace QuartzCreator
 {
+	class TextureManager;
+	class AnimationManager;
+	class TileMapManager;
+
 	class Config
 	{
 	public:
@@ -38,6 +42,22 @@ namespace QuartzCreator
 
 			}
 		};
+		
+		struct AnimationRecord
+		{
+			struct AnimFrameInfo
+			{
+				unsigned int m_X;
+				unsigned int m_Y;
+				unsigned int m_W;
+				unsigned int m_H;
+				unsigned int m_Dur;
+			};
+
+			std::string m_Name;
+			bool m_Looped;
+			std::vector<AnimFrameInfo> m_FrameInfo;
+		};
 
 		// TODO: Add entity record
 	
@@ -45,31 +65,42 @@ namespace QuartzCreator
 		static const std::string FILENAME;
 		std::vector<TileMapRecord> m_tileMapRecords;
 		std::vector<TextureRecord> m_textureRecords;
+		std::vector<AnimationRecord> m_animationRecords;
 		std::string m_ConfigPath;
 
 	public:
 
-		void loadConfigFromFile();
+		void LoadConfigFromFile();
 	
-		void addToConfig(const TileMapRecord& record);
+		void AddToConfig(const TileMapRecord& record);
 
-		void addToConfig(const TextureRecord& record);
+		void AddToConfig(const TextureRecord& record);
 
-		void writeConfigToFile() const;
+		void UpdateTextureRecords(TextureManager* tm);
 
-		const std::vector<TileMapRecord>& getTileMapRecords() const;
+		void UpdateTileMapRecords(TileMapManager* tm);
 
-		const std::vector<TextureRecord>& getTextureRecords() const;
+		void UpdateAnimationRecords(AnimationManager* am);
 
-		TextureRecord& getTextureRecord(const std::string& name);
+		void WriteConfigToFile() const;
 
-		TileMapRecord& getTilemapRecord(const std::string& name);
+		const std::vector<TileMapRecord>& GetTileMapRecords() const;
 
-		void changeTextureName(const std::string& prev, const std::string& newN);
+		const std::vector<TextureRecord>& GetTextureRecords() const;
+
+		const std::vector<AnimationRecord>& GetAnimationRecords() const;
+
+		TextureRecord& GetTextureRecord(const std::string& name);
+
+		TileMapRecord& GetTilemapRecord(const std::string& name);
+
+		AnimationRecord& GetAnimationRecord(const std::string& name);
+
+		void ChangeTextureName(const std::string& prev, const std::string& newN);
 
 	private:
 
-		std::string createConfigDirectory() const;
+		std::string CreateConfigDirectory() const;
 
 
 	};

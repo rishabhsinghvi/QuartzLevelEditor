@@ -13,24 +13,35 @@ namespace QuartzCreator
 {
 	class TextureManager
 	{
+
+	public:
+		struct TextureInfo
+		{
+			std::unique_ptr<sf::Texture> m_Texture;
+			std::string m_Path;
+		};
+
 	private:
-		std::unordered_map<std::string, std::unique_ptr<sf::Texture>> m_TextureList;
+
+		std::unordered_map<std::string, TextureInfo> m_TextureList;
 
 	public:
 
-		void loadConfigData(const std::vector<Config::TextureRecord>& records);
+		void LoadConfigData(const std::vector<Config::TextureRecord>& records);
 
-		void loadTexture(const std::string& name, const std::string& path);
+		void LoadTexture(const std::string& name, const std::string& path);
 
-		std::optional<sf::Texture> getTextureRef(const std::string& textureName) const;
+		std::optional<sf::Texture> GetTextureRef(const std::string& textureName) const;
 
-		std::optional<const sf::Texture*> getTexturePointer(const std::string& textureName) const;
+		std::optional<const sf::Texture*> GetTexturePointer(const std::string& textureName) const;
 
-		const sf::Texture& getLoadedTextureRef(const std::string& textureName) const;
+		const sf::Texture& GetLoadedTextureRef(const std::string& textureName) const;
 
-		const std::unordered_map<std::string, std::unique_ptr<sf::Texture>>& getTextureList() const;
+		const std::unordered_map<std::string, TextureManager::TextureInfo>& GetTextureList() const;
 
-		void renameTexture(const std::string& prev, const std::string& newN);
+		void RenameTexture(const std::string& prev, const std::string& newN);
+
+		void DeleteTexture(const std::string& name);
 
 	};
 }

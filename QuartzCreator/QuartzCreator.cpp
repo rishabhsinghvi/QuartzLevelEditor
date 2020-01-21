@@ -19,7 +19,7 @@ namespace QuartzCreator
 	{
 	}
 
-	void QuartzCreatorApp::init()
+	void QuartzCreatorApp::Init()
 	{
 		m_Window = std::make_unique<sf::RenderWindow>(sf::VideoMode().getDesktopMode(), m_WindowName, sf::Style::Fullscreen);
 		m_Window->setFramerateLimit(60);
@@ -34,13 +34,13 @@ namespace QuartzCreator
 
 		m_View = m_Window->getDefaultView();
 
-		m_tileMapManager->init(m_textureManager.get());
+		m_tileMapManager->Init(m_textureManager.get());
 		m_animationManager->Init(m_textureManager.get());
 
-		m_Config->loadConfigFromFile();
+		m_Config->LoadConfigFromFile();
 
-		m_textureManager->loadConfigData(m_Config->getTextureRecords());
-		m_tileMapManager->loadConfigData(m_Config->getTileMapRecords());
+		m_textureManager->LoadConfigData(m_Config->GetTextureRecords());
+		m_tileMapManager->LoadConfigData(m_Config->GetTileMapRecords());
 	}
 
 	void QuartzCreatorApp::run()
@@ -99,7 +99,7 @@ namespace QuartzCreator
 
 	void QuartzCreatorApp::shutdown()
 	{
-		m_Config->writeConfigToFile();
+		m_Config->WriteConfigToFile();
 		ImGui::SFML::Shutdown();
 	}
 
@@ -178,7 +178,7 @@ namespace QuartzCreator
 
 		if (ImGui::BeginPopup("TileMapTextureSelector"))
 		{
-			const auto& textures = m_textureManager->getTextureList();
+			const auto& textures = m_textureManager->GetTextureList();
 
 			
 			static char name[MAX_T_LEN] = "default";
@@ -193,8 +193,8 @@ namespace QuartzCreator
 				if (ImGui::Selectable(texture.first.c_str()))
 				{
 					auto sName = std::string(name);
-					m_Config->addToConfig(Config::TileMapRecord(sName, texture.first, m_Browser->selected_fn));
-					m_tileMapManager->loadTileMap(sName, m_Browser->selected_fn, texture.first);
+					m_Config->AddToConfig(Config::TileMapRecord(sName, texture.first, m_Browser->selected_fn));
+					m_tileMapManager->LoadTileMap(sName, m_Browser->selected_fn, texture.first);
 					ImGui::CloseCurrentPopup();
 				}
 			}
@@ -219,8 +219,8 @@ namespace QuartzCreator
 				if (name[0] != '\0')
 				{
 					auto sName = std::string(name);
-					m_Config->addToConfig(Config::TextureRecord(sName, m_Browser->selected_fn));
-					m_textureManager->loadTexture(sName, m_Browser->selected_fn);
+					m_Config->AddToConfig(Config::TextureRecord(sName, m_Browser->selected_fn));
+					m_textureManager->LoadTexture(sName, m_Browser->selected_fn);
 					ImGui::CloseCurrentPopup();
 				}
 			}
@@ -231,19 +231,20 @@ namespace QuartzCreator
 	{
 		if (ImGui::TreeNode("Available TileMaps"))
 		{
-			const auto& maps = m_tileMapManager->getTileMapList();
+			const auto& maps = m_tileMapManager->GetTileMapList();
 
 			for (const auto& map : maps)
 			{
 				/*if (ImGui::Selectable(map.first.c_str()))
 				{
-					m_currentTileMap = m_tileMapManager->getTileMapPointer(map.first);
+					m_currentTileMap = m_tileMapManager->GetTileMapPointer(map.first);
 				}*/
 				if (ImGui::TreeNode(map.first.c_str()))
 				{
+					ImGui::Text("Texture Used: %s", map.second.m_TextureName.c_str());
 					if (ImGui::Button("Load Tile Map"))
 					{
-						m_currentTileMap = m_tileMapManager->getTileMapPointer(map.first);
+						m_currentTileMap = m_tileMapManager->GetTileMapPointer(map.first);
 					}
 					ImGui::TreePop();
 				}
@@ -260,30 +261,42 @@ namespace QuartzCreator
 		{
 			static bool renameTexture = false;
 			static bool imageDisplay = false;
+			static bool deleteTexture = false;
+
 			static std::string imageName;
 
-			const auto& textures = m_textureManager->getTextureList();
+			const auto& textures = m_textureManager->GetTextureList();
 
 			for (const auto& texture : textures)
 			{
-				/*if (ImGui::Selectable(texture.first.c_str()))
-				{
-					imageDisplay = true;
-					imageName = texture.first;
-				}*/
 				if (ImGui::TreeNode(texture.first.c_str()))
 				{
-					if (ImGui::Button("Show Texture"))
+					if (ImGui::Button("Show"))
 					{
 						imageDisplay = true;
 						imageName = texture.first;
 					}
 
-					if (ImGui::Button("Rename Texture"))
+					ImGui::SameLine();
+
+					if (ImGui::Button("Rename"))
 					{
 						renameTexture = true;
 						imageName = texture.first;
 					}
+
+					ImGui::SameLine();
+
+					if (ImGui::Button("Delete"))
+					{
+						deleteTexture = true;
+						
+						// Stop showing image if we're deleting it
+						imageDisplay = false;
+
+						imageName = texture.first;
+					}
+
 					ImGui::TreePop();
 				}
 
@@ -309,13 +322,13 @@ namespace QuartzCreator
 					{
 						auto sName = std::string(name);
 
-						auto& record = m_Config->getTextureRecord(imageName);
+						auto& record = m_Config->GetTextureRecord(imageName);
 						record.m_Name = sName;
 
-						m_Config->changeTextureName(imageName, sName);
+						m_Config->ChangeTextureName(imageName, sName);
 
-						m_textureManager->renameTexture(imageName, sName);
-						m_tileMapManager->changeTextureName(imageName, sName);
+						m_textureManager->RenameTexture(imageName, sName);
+						m_tileMapManager->ChangeTextureName(imageName, sName);
 
 						imageName = sName;
 					
@@ -332,10 +345,16 @@ namespace QuartzCreator
 			if (imageDisplay)
 			{
 				ImGui::Begin(imageName.c_str(), &imageDisplay);
-				auto& t = m_textureManager->getLoadedTextureRef(imageName);
+				auto& t = m_textureManager->GetLoadedTextureRef(imageName);
 				ImGui::Text("Size (in px) = %d x %d", t.getSize().x, t.getSize().y);
 				ImGui::Image(t);
 				ImGui::End();
+			}
+
+			if (deleteTexture)
+			{
+				m_textureManager->DeleteTexture(imageName);
+				deleteTexture = false;
 			}
 
 

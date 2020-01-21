@@ -22,7 +22,7 @@ namespace QuartzCreator
 
 	void TileMap::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	{
-		auto txPtr = m_tManager->getTexturePointer(m_textureName);
+		auto txPtr = m_tManager->GetTexturePointer(m_textureName);
 
 		if (!txPtr.has_value())
 			return;
@@ -72,7 +72,7 @@ namespace QuartzCreator
 
 		const auto& layers = root["layers"];
 
-		auto texturePtr = m_tManager->getTexturePointer(m_textureName);
+		auto texturePtr = m_tManager->GetTexturePointer(m_textureName);
 
 		if (!texturePtr.has_value())
 		{

@@ -102,6 +102,11 @@ namespace QuartzCreator
 		m_Done = val;
 	}
 
+	unsigned int Animation::GetCurrentFrameIndex() const
+	{
+		return m_currentFrameIndex;
+	}
+
 	unsigned int Animation::GetNumFrames() const
 	{
 		return m_Frames.size();

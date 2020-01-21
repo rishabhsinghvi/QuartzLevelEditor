@@ -52,6 +52,8 @@ namespace QuartzCreator
 
 		void SetAnimationDone(bool val);
 
+		unsigned int GetCurrentFrameIndex() const;
+
 		unsigned int GetNumFrames() const;
 
 		bool IsEmpty() const;

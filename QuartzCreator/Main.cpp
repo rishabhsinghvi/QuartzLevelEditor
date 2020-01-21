@@ -8,7 +8,7 @@ int main()
 
 	auto quartzCreatorApp = std::make_unique<QuartzCreatorApp>();
 
-	quartzCreatorApp->init();
+	quartzCreatorApp->Init();
 	quartzCreatorApp->run();
 	quartzCreatorApp->shutdown();
 }

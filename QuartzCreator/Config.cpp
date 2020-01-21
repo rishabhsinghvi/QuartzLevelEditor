@@ -1,4 +1,7 @@
 #include "Config.h"
+#include "TextureManager.h"
+#include "TileMapManager.h"
+#include "AnimationManager.h"
 
 #include "json.hpp"
 
@@ -14,9 +17,9 @@ namespace QuartzCreator
 {
 	const std::string Config::FILENAME = "Config.json";
 
-	void Config::loadConfigFromFile()
+	void Config::LoadConfigFromFile()
 	{
-		m_ConfigPath = createConfigDirectory();
+		m_ConfigPath = CreateConfigDirectory();
 
 		std::ifstream file(m_ConfigPath + FILENAME);
 		
@@ -56,17 +59,56 @@ namespace QuartzCreator
 
 	}
 
-	void Config::addToConfig(const TileMapRecord& record)
+	void Config::AddToConfig(const TileMapRecord& record)
 	{
 		m_tileMapRecords.push_back(record);
 	}
 
-	void Config::addToConfig(const TextureRecord& record)
+	void Config::AddToConfig(const TextureRecord& record)
 	{
 		m_textureRecords.push_back(record);
 	}
 
-	void Config::writeConfigToFile() const
+	void Config::UpdateTextureRecords(TextureManager* tm)
+	{
+		m_textureRecords.clear();
+		const auto& textures = tm->GetTextureList();
+
+		for (const auto& texture : textures)
+		{
+			TextureRecord record;
+			record.m_Name = texture.first;
+			record.m_PathToFile = texture.second.m_Path;
+			m_textureRecords.push_back(std::move(record));
+		}
+	}
+
+	void Config::UpdateTileMapRecords(TileMapManager* tm)
+	{
+		m_tileMapRecords.clear();
+		const auto& tilemaps = tm->GetTileMapList();
+
+		for (const auto& tm : tilemaps)
+		{
+			TileMapRecord t;
+			t.m_Name = tm.first;
+			t.m_PathToFile = tm.second.m_Path;
+			t.m_TextureName = tm.second.m_TextureName;
+
+			m_tileMapRecords.push_back(std::move(t));
+		}
+	}
+
+
+
+	void Config::UpdateAnimationRecords(AnimationManager* am)
+	{
+
+	}
+
+
+
+	void Config::WriteConfigToFile() const
 	{
 		using json = nlohmann::json;
 
@@ -103,17 +145,22 @@ namespace QuartzCreator
 
 	}
 
-	const std::vector<Config::TileMapRecord>& Config::getTileMapRecords() const
+	const std::vector<Config::TileMapRecord>& Config::GetTileMapRecords() const
 	{
 		return m_tileMapRecords;
 	}
 
-	const std::vector<Config::TextureRecord>& Config::getTextureRecords() const
+	const std::vector<Config::TextureRecord>& Config::GetTextureRecords() const
 	{
 		return m_textureRecords;
 	}
 
-	Config::TextureRecord& Config::getTextureRecord(const std::string& name)
+	const std::vector<Config::AnimationRecord>& Config::GetAnimationRecords() const
+	{
+		return m_animationRecords;
+	}
+
+	Config::TextureRecord& Config::GetTextureRecord(const std::string& name)
 	{
 		for (auto& record : m_textureRecords)
 		{
@@ -125,7 +172,7 @@ namespace QuartzCreator
 		__debugbreak();
 	}
 
-	Config::TileMapRecord& Config::getTilemapRecord(const std::string& name)
+	Config::TileMapRecord& Config::GetTilemapRecord(const std::string& name)
 	{
 		for (auto& record : m_tileMapRecords)
 		{
@@ -137,7 +184,20 @@ namespace QuartzCreator
 		__debugbreak();
 	}
 
-	void Config::changeTextureName(const std::string& prev, const std::string& newN)
+	Config::AnimationRecord& Config::GetAnimationRecord(const std::string& name)
+	{
+		for (auto& record : m_animationRecords)
+		{
+			if (record.m_Name == name)
+			{
+				return record;
+			}
+		}
+		__debugbreak();
+		// TODO: insert return statement here
+	}
+
+	void Config::ChangeTextureName(const std::string& prev, const std::string& newN)
 	{
 		for (auto& x :m_tileMapRecords)
 		{
@@ -148,7 +208,7 @@ namespace QuartzCreator
 		}
 	}
 
-	std::string Config::createConfigDirectory() const
+	std::string Config::CreateConfigDirectory() const
 	{
 		// Not platform agnostic, need to change it later!
 		PWSTR path = nullptr;
