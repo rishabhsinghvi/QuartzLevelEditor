@@ -8,6 +8,9 @@
 
 namespace QuartzCreator
 {
+	extern float OFFSET_X = 0.0f;
+	extern float OFFSET_Y = 0.0f;
+
 	static constexpr size_t MAX_T_LEN = 50;
 	extern const unsigned int WINDOW_WIDTH = sf::VideoMode::getDesktopMode().width;
 	extern const unsigned int WINDOW_HEIGHT = sf::VideoMode::getDesktopMode().height;
@@ -28,6 +31,8 @@ namespace QuartzCreator
 		m_textureManager = std::make_unique<TextureManager>();
 		m_tileMapManager = std::make_unique<TileMapManager>();
 		m_animationManager = std::make_unique<AnimationManager>();
+		m_tmCreator = std::make_unique<TileMapCreator>();
+
 		m_Browser = std::make_unique<imgui_addons::ImGuiFileBrowser>();
 		m_Timer = std::make_unique<sf::Clock>();
 		m_Config = std::make_unique<Config>();
@@ -36,6 +41,8 @@ namespace QuartzCreator
 
 		m_tileMapManager->Init(m_textureManager.get());
 		m_animationManager->Init(m_textureManager.get());
+
+		m_tmCreator->Init(m_textureManager.get(), m_tileMapManager.get());
 
 		m_Config->LoadConfigFromFile();
 
@@ -62,28 +69,30 @@ namespace QuartzCreator
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 			{
 				m_View.move(KEY_MOVE_SPEED, 0.f);
+				OFFSET_X += KEY_MOVE_SPEED;
 			}
 
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 			{
 				m_View.move(-KEY_MOVE_SPEED, 0.f);
+				OFFSET_X -= KEY_MOVE_SPEED;
 			}
 
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 			{
 				m_View.move(0.f, -KEY_MOVE_SPEED);
+				OFFSET_Y -= KEY_MOVE_SPEED;
 			}
 
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
 			{
 				m_View.move(0.f, KEY_MOVE_SPEED);
+				OFFSET_Y += KEY_MOVE_SPEED;
 			}
-
-		
 
 			ImGui::SFML::Update(*m_Window, m_Timer->restart());
 
-			m_Window->clear();
+			m_Window->clear(sf::Color(171, 183, 183, 1));
 			m_Window->setView(m_View);
 			
 
@@ -114,6 +123,7 @@ namespace QuartzCreator
 
 
 		m_animationManager->DisplayGUI(m_Timer->getElapsedTime().asSeconds());
+		m_tmCreator->DisplayGUI(m_Window.get());
 		
 		ImGui::End();
 
@@ -386,8 +396,15 @@ namespace QuartzCreator
 			ImGui::TreePop();
 			ImGui::Separator();
 		}
+		ImGui::NewLine();
+		ImGui::NewLine();
 
+		ImGui::Separator();
 
+		if (ImGui::Button("Create Tile Map"))
+		{
+			m_tmCreator->EnableCreator();
+		}
 
 	}
 	void QuartzCreatorApp::drawTileMap()

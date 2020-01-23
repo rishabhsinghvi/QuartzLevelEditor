@@ -266,6 +266,7 @@
     <ClInclude Include="QuartzCreator.h" />
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="TileMap.h" />
+    <ClInclude Include="TileMapCreator.h" />
     <ClInclude Include="TileMapManager.h" />
     <ClInclude Include="Timer.h" />
   </ItemGroup>
@@ -296,6 +297,7 @@
     <ClCompile Include="QuartzCreator.cpp" />
     <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="TileMap.cpp" />
+    <ClCompile Include="TileMapCreator.cpp" />
     <ClCompile Include="TileMapManager.cpp" />
     <ClCompile Include="Timer.cpp" />
   </ItemGroup>

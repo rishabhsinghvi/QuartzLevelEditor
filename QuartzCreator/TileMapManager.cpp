@@ -1,10 +1,17 @@
 #include "TileMap.h"
 #include "TileMapManager.h"
 
+#include "imgui.h"
+#include "imgui-SFML.h"
+
+#include "SFML/Graphics.hpp"
+
 #include<iostream>
 
 namespace QuartzCreator
 {
+	
+
 	void TileMapManager::LoadConfigData(const std::vector<Config::TileMapRecord>& records)
 	{
 		for (const auto& record : records)

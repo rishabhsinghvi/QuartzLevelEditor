@@ -27,6 +27,7 @@ namespace QuartzCreator
 	private:
 		std::unordered_map<std::string, TileMapInfo> m_tileMapList;
 		TextureManager* m_tManager;
+
 	public:
 
 		void LoadConfigData(const std::vector<Config::TileMapRecord>& records);
