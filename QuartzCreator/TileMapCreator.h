@@ -21,6 +21,8 @@ namespace QuartzCreator
 			unsigned int m_tileIndex = -1; // A negative index means that there is no tile present
 		};
 
+		
+
 	private:
 		bool m_Running = false;
 		std::string m_Name;
@@ -51,7 +53,7 @@ namespace QuartzCreator
 
 		void CreateTileMap(sf::RenderWindow* window);
 
-
+		void SaveTileMap(const TileMap& tm, const std::vector<bool>& collideInfo);
 	};
 }
 

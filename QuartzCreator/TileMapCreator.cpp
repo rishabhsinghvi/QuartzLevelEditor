@@ -1,11 +1,12 @@
 #include "TileMapCreator.h"
 #include "TileMap.h"
 
-
 #include "imgui.h"
 #include "imgui-SFML.h"
 
+#include "json.hpp"
 
+#include <fstream>
 #include <iostream>
 
 namespace QuartzCreator
@@ -87,19 +88,21 @@ namespace QuartzCreator
 
 		static sf::VertexArray gridLines;
 		static std::vector<sf::Sprite> sprites;
-
+		static std::vector<bool> collidableInfo;
 
 		
 		static TileMap tileMap(m_TexManager);
+		
 		static bool tmCreated = false;
+
+
 		if (!tmCreated)
 		{
 			tileMap.SetTileSize(tileSizeX, tileSizeY);
 			tileMap.setPosition(0.f, 0.f);
 			tileMap.SetTileMapDimensions(numTilesX, numTilesY);
 			tileMap.SetTextureName(m_TextureName);
-			//std::vector<int> layer(numTilesX * numTilesY, 0);
-			//tileMap.AddLayer(layer);
+			tileMap.SetName(m_Name);
 			tileMap.CreateNewLayer();
 			tmCreated = true;
 		}
@@ -141,6 +144,7 @@ namespace QuartzCreator
 					spr.setTexture(tex);
 					spr.setTextureRect(sf::IntRect(j * tileSizeX, i * tileSizeY, tileSizeX, tileSizeY));
 					sprites.push_back(std::move(spr));
+					collidableInfo.push_back(false);
 				}
 			}
 
@@ -168,6 +172,25 @@ namespace QuartzCreator
 			}
 			ImGui::NewLine();
 		}
+
+		ImGui::NewLine();
+
+		// Due to std::vector<bool> unable to return bool*, a regular checkbox won't work. This works
+		if (m_Cur.m_tileIndex >= 0 && m_Cur.m_tileIndex < sprites.size()) 
+		{
+			ImGui::Text("Tile %d Collidable?", m_Cur.m_tileIndex);
+			ImGui::SameLine();
+
+			if (ImGui::Button("Yes"))
+				collidableInfo[m_Cur.m_tileIndex] = true;
+			
+			ImGui::SameLine();
+			
+			if(ImGui::Button("No"))
+				collidableInfo[m_Cur.m_tileIndex] = false;
+
+		}
+
 
 
 		ImGui::Separator();
@@ -212,7 +235,19 @@ namespace QuartzCreator
 		
 		if (ImGui::Button("Save TileMap"))
 		{
+			SaveTileMap(tileMap, collidableInfo);
 
+			m_Running = false;
+			m_DataAcquired = false;
+			tmCreated = false;
+			gridLinesCreated = false;
+			spriteArrayCreated = false;
+
+			tileMap.Clear();
+			collidableInfo.clear();
+
+			m_Cur.currentLayer = 0;
+			m_Cur.m_tileIndex = -1;
 		}
 
 
@@ -227,9 +262,10 @@ namespace QuartzCreator
 			spriteArrayCreated = false;
 
 			tileMap.Clear();
+			collidableInfo.clear();
 
 			m_Cur.currentLayer = 0;
-			m_Cur.m_tileIndex = 0;
+			m_Cur.m_tileIndex = -1;
 		}
 		ImGui::End();
 
@@ -248,12 +284,56 @@ namespace QuartzCreator
 
 		}
 
-		
-
-
 		window->draw(tileMap);
-
 		window->draw(gridLines);
+	}
+
+	void TileMapCreator::SaveTileMap(const TileMap& tm, const std::vector<bool>& collideInfo)
+	{
+		using json = nlohmann::json;
+
+		json root;
+
+
+		auto layers = json::array();
+
+		for (const auto& layer : tm.GetTileData())
+		{
+			auto x = json::object();
+			auto data = json::array();
+
+			for (auto tileIndex : layer)
+			{
+				data.push_back(tileIndex);
+			}
+
+			x["DATA"] = std::move(data);
+
+			layers.push_back(x);
+		}
+
+		auto col = json::object();
+		for (int i = 0; i < collideInfo.size(); i++)
+		{
+			col[std::to_string(i)] = collideInfo[i];
+		}
+
+
+		root["WIDTH"] = tm.GetTileWidth();
+		root["HEIGHT"] = tm.GetTileHeight();
+
+		root["TILE_WIDTH"] = tm.GetTileSizeX();
+		root["TILE_HEIGHT"] = tm.GetTileSizeY();
+
+		root["LAYERS"] = std::move(layers);
+		root["COLLIDABLE_INFO"] = collideInfo;
+		root["TEXTURE_NAME"] = tm.GetTextureName();
+
+		std::ofstream fileToWrite(tm.GetName() + ".json");
+
+		fileToWrite << root;
+
+		std::cout << "Succesfully written tileMap to file\n";
 	}
 
 

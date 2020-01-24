@@ -15,6 +15,8 @@ namespace QuartzCreator
 
 	class TileMap: public sf::Drawable, public sf::Transformable
 	{
+	public:
+
 	private:
 		std::vector<sf::VertexArray> m_Vertices;
 		int m_tileSizeX, m_tileSizeY;
@@ -22,8 +24,11 @@ namespace QuartzCreator
 		std::string m_textureName;
 		std::string m_tileMapFile;
 		TextureManager* m_tManager;
-		
+		std::string m_Name;
+		std::vector<std::vector<int>> m_TileData;
+
 	public:
+
 
 		TileMap() = default;
 
@@ -40,6 +45,10 @@ namespace QuartzCreator
 		void SetTextureName(const std::string& name);
 
 		void AddLayer(const std::vector<int>& layer);
+
+		void SetName(const std::string& name);
+
+		const std::string& GetName() const;
 
 		void CreateNewLayer();
 
@@ -58,6 +67,16 @@ namespace QuartzCreator
 		void Clear();
 
 		void FillLayer(unsigned int layer, int tileIndex);
+
+		int GetTileWidth() const;
+
+		int GetTileHeight() const;
+
+		int GetTileSizeX() const;
+
+		int GetTileSizeY() const;
+
+		const std::vector<std::vector<int>>& GetTileData() const;
 
 	private:
 		void CreateTileMap(); 
