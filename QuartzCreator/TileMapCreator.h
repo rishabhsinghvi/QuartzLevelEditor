@@ -51,6 +51,7 @@ namespace QuartzCreator
 
 		void CreateTileMap(sf::RenderWindow* window);
 
+
 	};
 }
 

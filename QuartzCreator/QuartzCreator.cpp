@@ -4,6 +4,8 @@
 #include<iostream>
 #endif
 
+#include<cmath>
+
 
 
 namespace QuartzCreator
@@ -62,6 +64,13 @@ namespace QuartzCreator
 				if (event.type == sf::Event::Closed)
 				{
 					m_Running = false;
+				}
+
+				if (event.type == sf::Event::MouseWheelScrolled)
+				{
+					float delta = -1.0f * static_cast<float>(event.mouseWheelScroll.delta);
+					auto zoomLevel = std::exp(delta);
+					m_View.zoom(zoomLevel);
 				}
 
 			}

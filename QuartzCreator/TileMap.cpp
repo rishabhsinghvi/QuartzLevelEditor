@@ -75,8 +75,19 @@ namespace QuartzCreator
 				if (tileNumber < 0)
 					continue;
 
-				int tu = tileNumber % ((texturePtr.value()->getSize().x / m_tileSizeX));
-				int tv = tileNumber / (((texturePtr.value()->getSize().y / m_tileSizeY) - 1));
+				/*int tu = tileNumber % ((texturePtr.value()->getSize().x / m_tileSizeX));
+				int tv = tileNumber / (((texturePtr.value()->getSize().y / m_tileSizeY) - 1));*/
+
+
+				auto x = (texturePtr.value()->getSize().x / m_tileSizeX);
+				auto y = (texturePtr.value()->getSize().y / m_tileSizeY);
+
+				int tu = tileNumber % x;
+				int tv;
+				if (y % 2 == 0)
+					tv = tileNumber / y;
+				else
+					tv = tileNumber / (y - 1);
 
 				auto quad = &vertices[(i + j * m_tileMapWidth) * 4];
 
@@ -175,9 +186,20 @@ namespace QuartzCreator
 		}
 
 
-		int tu = tileNumber % (texturePtr.value()->getSize().x / m_tileSizeX);
-		//int tv = tileNumber / ((texturePtr.value()->getSize().y / m_tileSizeY) - 1);
-		int tv = tileNumber / ((texturePtr.value()->getSize().y / m_tileSizeY));
+		auto x = (texturePtr.value()->getSize().x / m_tileSizeX);
+		auto y = (texturePtr.value()->getSize().y / m_tileSizeY);
+
+		int tu = tileNumber % x;
+		int tv;
+		if (y % 2 == 0)
+			tv = tileNumber / y;
+		else
+			tv = tileNumber / (y - 1);
+
+#ifdef _DEBUG
+
+		std::cout << "x: " << x << ", y: " << y << ", tu: " << tu << ", tv: " << tv << '\n';
+#endif
 
 		auto quad = &vertexArray[(i + j * m_tileMapWidth) * 4];
 
@@ -193,6 +215,7 @@ namespace QuartzCreator
 		quad[2].texCoords = sf::Vector2f((tu + 1) * m_tileSizeX, (tv + 1) * m_tileSizeY);
 		quad[3].texCoords = sf::Vector2f(tu * m_tileSizeX, (tv + 1) * m_tileSizeY);
 
+
 	}
 
 	void TileMap::Clear()
@@ -200,6 +223,18 @@ namespace QuartzCreator
 		m_Vertices.clear();
 		m_textureName.clear();
 	}
+
+	void TileMap::FillLayer(unsigned int layer, int tileIndex)
+	{
+		for (auto i = 0; i < m_tileMapWidth; i++)
+		{
+			for (auto j = 0; j < m_tileMapHeight; j++)
+			{
+				AddTileAt(layer, i, j, tileIndex);
+			}
+		}
+	}
+
 
 
 	void TileMap::CreateTileMap()
@@ -251,8 +286,16 @@ namespace QuartzCreator
 				{
 					int tileNumber = layerData[i + j * m_tileMapWidth] - 1;
 
-					int tu = tileNumber % static_cast<int>(texturePtr.value()->getSize().x / m_tileSizeX);
-					int tv = tileNumber / static_cast<int>((texturePtr.value()->getSize().y / m_tileSizeY) - 1);
+
+					auto x = (texturePtr.value()->getSize().x / m_tileSizeX);
+					auto y = (texturePtr.value()->getSize().y / m_tileSizeY);
+
+					int tu = tileNumber % x;
+					int tv;
+					if (y % 2 == 0)
+						tv = tileNumber / y;
+					else
+						tv = tileNumber / (y - 1);
 
 					auto quad = &vertices[(i + j * m_tileMapWidth) * 4];
 

@@ -57,6 +57,8 @@ namespace QuartzCreator
 
 		void Clear();
 
+		void FillLayer(unsigned int layer, int tileIndex);
+
 	private:
 		void CreateTileMap(); 
 

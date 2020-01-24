@@ -159,8 +159,9 @@ namespace QuartzCreator
 				if (ImGui::ImageButton(s))
 				{
 					m_Cur.m_Sprite = s;
+					//m_Cur.m_Sprite.setColor(sf::Color(255, 255, 255, 128));
+					m_Cur.m_Sprite.setColor(sf::Color(0, 0, 0, 128));
 					m_Cur.m_tileIndex = i * x + j;
-					std::cout << m_Cur.m_tileIndex << '\n';
 				}
 				ImGui::PopID();
 				ImGui::SameLine();
@@ -182,11 +183,24 @@ namespace QuartzCreator
 		}
 
 		ImGui::Separator();
+
+		if (ImGui::Button("Fill"))
+		{
+			if (m_Cur.m_tileIndex >= 0)
+			{
+				tileMap.FillLayer(m_Cur.currentLayer, m_Cur.m_tileIndex);
+			}
+		}
+
+		ImGui::SameLine();
+
 		if (ImGui::Button("Add Layer"))
 		{
 			tileMap.CreateNewLayer();
 		}
+
 		ImGui::SameLine();
+		
 		if (ImGui::Button("Clear Map"))
 		{
 			tileMap.DeleteAllLayers();
@@ -194,8 +208,15 @@ namespace QuartzCreator
 			m_Cur.currentLayer = 0;
 		}
 
-		ImGui::NewLine();
+		ImGui::Separator();
 		
+		if (ImGui::Button("Save TileMap"))
+		{
+
+		}
+
+
+		ImGui::Separator();
 
 		if (ImGui::Button("Close"))
 		{
@@ -214,15 +235,14 @@ namespace QuartzCreator
 
 		auto mousePos = sf::Mouse::getPosition(*window);
 
-		auto posX = OFFSET_X + mousePos.x;
-		auto posY = OFFSET_Y + mousePos.y;
+		auto mousePosWorldCo = window->mapPixelToCoords(mousePos);
 
-		int valX = (posX ) / (tileSizeX);
-		int valY = (posY) / (tileSizeY);
-
+		int valX = mousePosWorldCo.x / tileSizeX;
+		int valY = mousePosWorldCo.y / tileSizeY;
 
 		if (valX >= 0 && valX < numTilesX && valY >= 0 && valY < numTilesY)
 		{
+			m_Cur.m_Sprite.setPosition(static_cast<float>(valX * tileSizeX), static_cast<float>(valY * tileSizeY));
 			if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
 				tileMap.AddTileAt(m_Cur.currentLayer, valX, valY, m_Cur.m_tileIndex);
 
