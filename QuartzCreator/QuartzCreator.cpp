@@ -372,6 +372,20 @@ namespace QuartzCreator
 			m_tmCreator->EnableCreator();
 		}
 
+		ImGui::Separator();
+
+		if (ImGui::Button("Create Entity"))
+		{
+			
+		}
+
+		ImGui::Separator();
+
+		if (ImGui::Button("Create Level"))
+		{
+
+		}
+
 	}
 	void QuartzCreatorApp::drawTileMap()
 	{

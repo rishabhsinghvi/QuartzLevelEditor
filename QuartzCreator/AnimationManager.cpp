@@ -157,6 +157,27 @@ namespace QuartzCreator
 			m_DisplayGUI = false;
 			m_DisplayMaker = false;
 		}
+
+
+		auto& frameList = animation.GetFrameList();
+
+
+		for (auto i = 0; i < frameList.size(); i++)
+		{
+			ImGui::PushID(i);
+			ImGui::Text(std::to_string(i).c_str());
+			ImGui::SameLine();
+			ImGui::InputFloat("Frame Length", &frameList[i].m_Dur);
+			ImGui::SameLine();
+			if (ImGui::Button("Remove Frame"))
+			{
+				animation.RemoveFrame(i);
+			}
+			ImGui::PopID();
+
+		}
+
+		ImGui::Separator();
 		
 		if (ImGui::Button("Save Animation"))
 		{
@@ -172,10 +193,24 @@ namespace QuartzCreator
 
 		if (!animation.IsEmpty() && viewAnimation)
 		{
-			animation.Update(clock.getElapsedTime().asSeconds());
+			animation.Update(clock.getElapsedTime().asSeconds());;
 			ImGui::Begin("Animation Viewer", &viewAnimation);
 			ImGui::Image(m_ViewSprite);
 			ImGui::Text("Frame: %d", animation.GetCurrentFrameIndex());
+			if (ImGui::Button("Restart Animation"))
+			{
+				animation.Reset();
+			}
+
+			ImGui::Separator();
+
+			if (ImGui::Button("Clear Animation"))
+			{
+				animation.Clear();
+			}
+
+
+			clock.restart();
 			ImGui::End();
 		}
 

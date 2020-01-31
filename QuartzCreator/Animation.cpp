@@ -122,6 +122,17 @@ namespace QuartzCreator
 		return m_Frames;
 	}
 
+	void Animation::RemoveFrame(unsigned int index)
+	{
+		if (index >= m_Frames.size())
+		{
+			return;
+		}
+
+		m_Frames.erase(m_Frames.begin() + index);
+		Reset();
+	}
+
 	void Animation::Clear()
 	{
 		m_Looped = false;

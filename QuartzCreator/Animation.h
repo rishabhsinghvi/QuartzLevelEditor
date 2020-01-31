@@ -60,6 +60,8 @@ namespace QuartzCreator
 
 		std::vector<Frame>& GetFrameList();
 
+		void RemoveFrame(unsigned int index);
+
 		void Clear();
 	};
 
