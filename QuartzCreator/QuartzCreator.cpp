@@ -254,10 +254,6 @@ namespace QuartzCreator
 
 			for (const auto& map : maps)
 			{
-				/*if (ImGui::Selectable(map.first.c_str()))
-				{
-					m_currentTileMap = m_tileMapManager->GetTileMapPointer(map.first);
-				}*/
 				if (ImGui::TreeNode(map.first.c_str()))
 				{
 					ImGui::Text("Texture Used: %s", map.second.m_TextureName.c_str());
@@ -278,7 +274,6 @@ namespace QuartzCreator
 
 		if (ImGui::TreeNode("Available Textures"))
 		{
-			static bool renameTexture = false;
 			static bool imageDisplay = false;
 			static bool deleteTexture = false;
 
@@ -298,14 +293,6 @@ namespace QuartzCreator
 
 					ImGui::SameLine();
 
-					if (ImGui::Button("Rename"))
-					{
-						renameTexture = true;
-						imageName = texture.first;
-					}
-
-					ImGui::SameLine();
-
 					if (ImGui::Button("Delete"))
 					{
 						deleteTexture = true;
@@ -320,45 +307,6 @@ namespace QuartzCreator
 				}
 
 			}
-
-			if (renameTexture)
-			{
-				ImGui::OpenPopup("RenameTexture");
-				renameTexture = false;
-			}
-
-			if (ImGui::BeginPopup("RenameTexture"))
-			{
-				ImGui::Text("Enter New Name For Texture");
-				
-				static char name[MAX_T_LEN];
-
-				ImGui::InputText("New Name", name, MAX_T_LEN);
-
-				if (ImGui::Button("Rename"))
-				{
-					if (name[0] != '\0')
-					{
-						auto sName = std::string(name);
-
-						auto& record = m_Config->GetTextureRecord(imageName);
-						record.m_Name = sName;
-
-						m_Config->ChangeTextureName(imageName, sName);
-
-						m_textureManager->RenameTexture(imageName, sName);
-						m_tileMapManager->ChangeTextureName(imageName, sName);
-
-						imageName = sName;
-					
-						ImGui::CloseCurrentPopup();
-					}
-				}
-
-				ImGui::EndPopup();
-
-			}
-
 
 
 			if (imageDisplay)
@@ -398,13 +346,21 @@ namespace QuartzCreator
 			{
 				if (ImGui::TreeNode(anim.first.c_str()))
 				{
-
 					ImGui::TreePop();
 				}
 			}
 			ImGui::TreePop();
 			ImGui::Separator();
 		}
+
+		if (ImGui::TreeNode("Available Animation Files"))
+		{
+			ImGui::TreePop();
+			ImGui::Separator();
+		}
+
+
+
 		ImGui::NewLine();
 		ImGui::NewLine();
 
@@ -412,6 +368,7 @@ namespace QuartzCreator
 
 		if (ImGui::Button("Create Tile Map"))
 		{
+			m_currentTileMap = nullptr;
 			m_tmCreator->EnableCreator();
 		}
 

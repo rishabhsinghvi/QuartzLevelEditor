@@ -4,7 +4,6 @@
 #include<vector>
 #include<string>
 
-
 namespace QuartzCreator
 {
 	class TextureManager;
@@ -67,6 +66,7 @@ namespace QuartzCreator
 		std::vector<TextureRecord> m_textureRecords;
 		std::vector<AnimationRecord> m_animationRecords;
 		std::string m_ConfigPath;
+		std::string m_WorkingDirectoryPath;
 
 	public:
 
@@ -100,7 +100,7 @@ namespace QuartzCreator
 
 	private:
 
-		std::string CreateConfigDirectory() const;
+		std::pair<std::string, std::string> CreateConfigDirectory() const;
 
 
 	};

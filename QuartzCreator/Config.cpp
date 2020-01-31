@@ -11,6 +11,7 @@
 #include<sstream>
 #include<fstream>
 #include<string>
+#include<utility>
 
 
 namespace QuartzCreator
@@ -19,7 +20,9 @@ namespace QuartzCreator
 
 	void Config::LoadConfigFromFile()
 	{
-		m_ConfigPath = CreateConfigDirectory();
+		auto paths = CreateConfigDirectory();
+		m_ConfigPath = paths.first;
+		m_WorkingDirectoryPath = paths.second;
 
 		std::ifstream file(m_ConfigPath + FILENAME);
 		
@@ -208,28 +211,38 @@ namespace QuartzCreator
 		}
 	}
 
-	std::string Config::CreateConfigDirectory() const
+	std::pair<std::string, std::string> Config::CreateConfigDirectory() const
 	{
 		// Not platform agnostic, need to change it later!
 		PWSTR path = nullptr;
 
 		HRESULT hr = SHGetKnownFolderPath(FOLDERID_LocalAppData, 0, nullptr, &path);
 
-		std::wstringstream ss;
-		ss << path << L"\\QuartzCreator\\";
+		std::wstringstream rootDirectoryPath;
+		rootDirectoryPath << path << L"\\QuartzLevelEditor\\";
+		std::wstringstream workingDirectoryPath;
+		workingDirectoryPath << path << L"\\QuartzLevelEditor\\WorkingDirectory\\";
 
 		CoTaskMemFree(path);
 
-		auto wString = ss.str();
+		auto rString = rootDirectoryPath.str();
+		auto wString = workingDirectoryPath.str();
+		auto directoryPath = rString.c_str();
+		auto wDirectoryPath = wString.c_str();
 
-		auto directoryPath = wString.c_str();
+		std::string dPath;
+		std::string wPath;
 
 		if (CreateDirectory(directoryPath, nullptr) || ERROR_ALREADY_EXISTS == GetLastError())
 		{
-			return std::string(wString.begin(), wString.end());
+			dPath =  std::string(rString.begin(), rString.end());
 		}
-		
-		// If AppData folder not found, will default to current working directory
-		return "";
+
+		if (CreateDirectory(wDirectoryPath, nullptr) || ERROR_ALREADY_EXISTS == GetLastError())
+		{
+			wPath = std::string(wString.begin(), wString.end());
+		}
+
+		return std::make_pair(dPath, wPath);
 	}
 }

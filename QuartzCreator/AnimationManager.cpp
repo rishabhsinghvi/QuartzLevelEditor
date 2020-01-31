@@ -48,7 +48,7 @@ namespace QuartzCreator
 		else
 		{
 			const auto& textures = m_tManager->GetTextureList();
-			ImGui::Begin("Select Texture", &nameSelected);
+			ImGui::Begin("Select Texture");
 			for (const auto& texture : textures)
 			{
 				if (ImGui::Selectable(texture.first.c_str()))
@@ -56,7 +56,19 @@ namespace QuartzCreator
 					m_CurrentTextureName = texture.first;
 					m_DisplayMaker = true;
 					m_DisplayGUI = false;
+					nameSelected = false;
 				}
+
+			}
+
+			if (ImGui::Button("Close"))
+			{
+				nameSelected = false;
+				animName.clear();
+				m_CurrentTextureName.clear();
+				m_DisplayMaker = false;
+				m_DisplayGUI = false;
+				nameSelected = false;
 			}
 			ImGui::End();
 		}
@@ -105,7 +117,7 @@ namespace QuartzCreator
 			dimensionsChanged = false;
 		}
 
-		ImGui::Begin("Make Animation", &m_DisplayMaker);
+		ImGui::Begin("Make Animation");
 
 		if (ImGui::InputFloat("Width", &spriteWidth) || ImGui::InputFloat("Height", &spriteHeight))
 		{
@@ -135,11 +147,26 @@ namespace QuartzCreator
 		ImGui::Text("Frames: %d", animation.GetNumFrames());
 		ImGui::SameLine();
 		ImGui::Text("Animation Time: %.3fs", animation.GetLength());
+
+		ImGui::Separator();
+		if (ImGui::Button("Close"))
+		{
+			m_CurrentTextureName.clear();
+			m_AnimName.clear();
+			
+			m_DisplayGUI = false;
+			m_DisplayMaker = false;
+		}
 		
 		if (ImGui::Button("Save Animation"))
 		{
 			m_AnimationList[m_AnimName] = animation;
 			animation.Clear();
+			m_CurrentTextureName.clear();
+			m_AnimName.clear();
+
+			m_DisplayGUI = false;
+			m_DisplayMaker = false;
 		}
 
 
@@ -151,8 +178,6 @@ namespace QuartzCreator
 			ImGui::Text("Frame: %d", animation.GetCurrentFrameIndex());
 			ImGui::End();
 		}
-
-
 
 		ImGui::End();
 
