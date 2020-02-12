@@ -132,7 +132,7 @@ namespace QuartzCreator
 				ImGui::PushID(i * x + j);
 				if (ImGui::ImageButton(s))
 				{
-					animation.AddFrame({ s.getTextureRect(), 1.0f });
+					animation.AddFrame({ s.getTextureRect(), 0.1f });
 					std::cout << animation.GetLength() << '\n';
 				}
 				ImGui::PopID();

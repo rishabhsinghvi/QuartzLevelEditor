@@ -64,6 +64,8 @@ namespace QuartzCreator
 
 		void AddTileAt(unsigned int layer, unsigned int i, unsigned int j, unsigned int index);
 
+		void RemoveTileAt(unsigned int layer, unsigned int i, unsigned int j);
+
 		void Clear();
 
 		void FillLayer(unsigned int layer, int tileIndex);

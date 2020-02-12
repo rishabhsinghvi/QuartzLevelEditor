@@ -279,8 +279,10 @@ namespace QuartzCreator
 		if (valX >= 0 && valX < numTilesX && valY >= 0 && valY < numTilesY)
 		{
 			m_Cur.m_Sprite.setPosition(static_cast<float>(valX * tileSizeX), static_cast<float>(valY * tileSizeY));
-			if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
+			if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 				tileMap.AddTileAt(m_Cur.currentLayer, valX, valY, m_Cur.m_tileIndex);
+			else if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
+				tileMap.RemoveTileAt(m_Cur.currentLayer, valX, valY);
 
 		}
 

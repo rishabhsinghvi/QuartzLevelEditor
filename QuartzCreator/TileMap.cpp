@@ -239,6 +239,24 @@ namespace QuartzCreator
 		m_TileData[layer][i + j * m_tileMapWidth] = tileNumber;
 	}
 
+	void TileMap::RemoveTileAt(unsigned int layer, unsigned int i, unsigned int j)
+	{
+		if (layer + 1 > m_Vertices.size())
+			return;
+
+		auto& vertexArray = m_Vertices[layer];
+
+		auto quad = &vertexArray[(i + j * m_tileMapWidth) * 4];
+
+		quad[0].texCoords = sf::Vector2f(-1.f, -1.f);
+		quad[1].texCoords = sf::Vector2f(-1.f, -1.f);
+		quad[2].texCoords = sf::Vector2f(-1.f, -1.f);
+		quad[3].texCoords = sf::Vector2f(-1.f, -1.f);
+
+		m_TileData[layer][i + j * m_tileMapWidth] = -1;
+
+	}
+
 	void TileMap::Clear()
 	{
 		m_Vertices.clear();

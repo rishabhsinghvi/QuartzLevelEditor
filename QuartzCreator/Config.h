@@ -54,6 +54,7 @@ namespace QuartzCreator
 			};
 
 			std::string m_Name;
+			std::string m_TextureName;
 			bool m_Looped;
 			std::vector<AnimFrameInfo> m_FrameInfo;
 		};
