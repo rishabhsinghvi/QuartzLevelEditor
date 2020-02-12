@@ -163,8 +163,7 @@ namespace QuartzCreator
 				if (ImGui::ImageButton(s))
 				{
 					m_Cur.m_Sprite = s;
-					//m_Cur.m_Sprite.setColor(sf::Color(255, 255, 255, 128));
-					m_Cur.m_Sprite.setColor(sf::Color(0, 0, 0, 128));
+					m_Cur.m_Sprite.setColor(sf::Color(255, 255, 255, 128));
 					m_Cur.m_tileIndex = i * x + j;
 				}
 				ImGui::PopID();
@@ -279,6 +278,7 @@ namespace QuartzCreator
 		if (valX >= 0 && valX < numTilesX && valY >= 0 && valY < numTilesY)
 		{
 			m_Cur.m_Sprite.setPosition(static_cast<float>(valX * tileSizeX), static_cast<float>(valY * tileSizeY));
+
 			if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 				tileMap.AddTileAt(m_Cur.currentLayer, valX, valY, m_Cur.m_tileIndex);
 			else if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
@@ -288,6 +288,7 @@ namespace QuartzCreator
 
 		window->draw(tileMap);
 		window->draw(gridLines);
+		window->draw(m_Cur.m_Sprite);
 	}
 
 	void TileMapCreator::SaveTileMap(const TileMap& tm, const std::vector<bool>& collideInfo)
